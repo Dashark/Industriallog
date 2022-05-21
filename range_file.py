@@ -8,7 +8,7 @@ import xlrd
 from xlutils.copy import copy
 
 
-path = 'C:/Users/Lenovo/Desktop/MSPS/Log/'
+path = 'E:/Industey-log-data/Industriallog/data/'#修改为日志所存储的文件夹
 def read_log():
     #f = xlwt.Workbook()
     f = xlrd.open_workbook(fileaddress)
@@ -24,7 +24,7 @@ def read_log():
     for logline in log:
         logline = logline.split('：')
         logline1 = logline[1].split(' ')
-        logline0=logline[0].split(' ')
+        logline0=logline[0].split(' ')#根据不同的分隔符可以进行修改
         logline1.insert(0, logline0[0])
         # for i in range(len(logline2)):
         #     logline1.append(logline2[i])
@@ -63,6 +63,6 @@ data = pd.DataFrame()
 
 if __name__ == '__main__':
     for fileaddresstlog in files:
-        fileaddress = 'C:/Users/Lenovo/Desktop/MSPS/Log/log_Data_1.xls'
+        fileaddress = 'E:/Industey-log-data/Industriallog/log_Data_1.xlsx'#要输出的excel表
         read_log()
         print('end')
