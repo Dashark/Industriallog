@@ -16,3 +16,9 @@
 
 最后输出结果是state.txt
 
+4.截取reset之间的函数
+
+​	1.修改了range_file加入了分秒到输出文件log_Data_1里面
+
+​	2.通过修改between_reset.py中的log_Data_1的地址，即可运行，但由于边界问题，第一个dev_reset之前的状态未被存入txt中，最后一组dev_reset的状态也未被存入
+

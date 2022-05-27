@@ -22,13 +22,14 @@ def read_log():
     #exclbegin=
     r = 0
     for logline in log:
-        logline = logline.split('：')
-        logline1 = logline[1].split(' ')
-        logline0=logline[0].split(' ')#根据不同的分隔符可以进行修改
-        logline1.insert(0, logline0[0])
+        logline = logline.split('：')  # 分开状态
+        logline1 = logline[1].split(' ')  # 得到状态
+        logline0 = logline[0].split(' ')  # 分开时间
+        logline1.insert(0, logline0[0])  # 得到年月日
+        logline1.insert(0, logline0[1])  # 得到分秒
         # for i in range(len(logline2)):
         #     logline1.append(logline2[i])
-        write_excel(r+rows_old, logline1, new_worksheet)#excelbegin+#
+        write_excel(r + rows_old, logline1, new_worksheet)  # excelbegin+#
         r = r + 1
     new_workbook.save(fileaddress)
 
