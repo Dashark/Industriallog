@@ -22,3 +22,10 @@
 
 ​	2.通过修改between_reset.py中的log_Data_1的地址，即可运行，但由于边界问题，第一个dev_reset之前的状态未被存入txt中，最后一组dev_reset的状态也未被存入
 
+5.上传至服务器
+
+Update_result函数主要添加了函数update进行传输
+
+6.deal_gdf
+
+处理gdf文件，将每个gdf文件中的电压和电流分别读出并作出曲线图
