@@ -1,10 +1,12 @@
 import pandas as pd
 import numpy as np
 import os
+import json
+import urllib.request
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import style
-
+import requests
 electric_current=[]
 Voltage=[]
 TIME=[]
@@ -85,6 +87,17 @@ def extract(id_no):
             temp_elec.append(electric_current[i])
             temp_volt.append(Voltage[i])
     return temp_time,temp_elec,temp_volt,temp_datetime
+def Update_gdf_json(data):
+    #url = 'http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting'
+    # 调用get
+    #r = requests.get(url + params)  # 响应对象
+    request  = urllib.request.Request(url='http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting/', data=json.dumps(data).encode())
+    response = urllib.request.urlopen(request)
+    print(response)
+    print('状态码：',response.getcode())
+    # print('请求url：', response.url)
+    # print('状态码：', response.status_code)
+    # print('文本响应内容：', response.text)
 if __name__ == '__main__':
     r=0
     for fileaddresstlog in files:
@@ -93,7 +106,8 @@ if __name__ == '__main__':
         Voltage.append(List2)
         TIME.append(List3)
         MOD.append(List4)
-
+    jsonArr = json.dumps(MOD, ensure_ascii=True)
+    Update_gdf_json(jsonArr)
     ID=input("请输入ID：")
     time,elec,volt,date=extract(ID)
     PLOT_ELE(time,elec,date)
