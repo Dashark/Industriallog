@@ -11,13 +11,13 @@ electric_current=[]
 Voltage=[]
 TIME=[]
 MOD=[]
-path = 'E:/Industey-log-data/MSPS/FireData/'#可以把测试样例下载下来改成时间文件夹前面的地址
+path = './MSPS/FireData/20210823111212/'#可以把测试样例下载下来改成时间文件夹前面的地址
 def read_log():
     list1=[]
     list2=[]
     list3=[]
     list4=[]
-    log = open(fileaddresstlog, 'r')
+    log = open(fileaddresstlog, 'r', encoding='GBK')
     count=0
     for logline in log:
         data1={}
@@ -36,9 +36,10 @@ def read_log():
 # 文件列表
 files = []
 for file in os.listdir(path):
-    if os.path.isfile(file):
-        if file.endswith(".gdf"):
-            files.append(path + file)
+    print(file)
+    # if os.path.isfile(file):
+    if file.endswith(".gdf"):
+        files.append(path + file)
     else:
         for file1 in os.listdir(path+file+'/'):
             if file1.endswith(".gdf"):
@@ -91,9 +92,13 @@ def Update_gdf_json(data):
     #url = 'http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting'
     # 调用get
     #r = requests.get(url + params)  # 响应对象
+    print(data)
     request  = urllib.request.Request(url='http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting/', data=json.dumps(data).encode())
-    response = urllib.request.urlopen(request)
-    print(response)
+    # response = urllib.request.urlopen(request)
+    response = urllib.request.urlopen(url='http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting/', data=json.dumps(data).encode())
+    print(response.read())
+    print(response.status)
+    print(response.getheaders())
     print('状态码：',response.getcode())
     # print('请求url：', response.url)
     # print('状态码：', response.status_code)
