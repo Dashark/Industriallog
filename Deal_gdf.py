@@ -21,11 +21,12 @@ def read_log():
     count=0
     for logline in log:
         data1={}
-        if count<=8:
+        if count<8:
             logline1=logline.split(':')
-            data1[logline1[0]]=logline1[1].strip('/n')
+            logline2=logline1[0].split('->')
+            data1[logline2[1]]=logline1[1].strip('/n')
             list4.append(data1)
-        else:
+        elif count>8:
             logline = logline.split('	')
             list1.append(logline[2])
             list2.append(logline[1])
@@ -43,8 +44,6 @@ for file in os.listdir(path):
         for file1 in os.listdir(path+file+'/'):
             if file1.endswith(".gdf"):
                 files.append(path + file+'/' +file1)
-
-
 data = pd.DataFrame()
 def unified_dimension_Y(List1):
     arr_sum=1
@@ -91,13 +90,25 @@ def Update_gdf_json(data):
     #url = 'http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting'
     # 调用get
     #r = requests.get(url + params)  # 响应对象
-    request  = urllib.request.Request(url='http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting/', data=json.dumps(data).encode())
+    headers={'Content-Type':'application/json'}
+    request  = urllib.request.Request(url='http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting/', headers=headers,data=json.dumps(data).encode('utf-8'))
     response = urllib.request.urlopen(request)
     print(response)
     print('状态码：',response.getcode())
-    # print('请求url：', response.url)
-    # print('状态码：', response.status_code)
-    # print('文本响应内容：', response.text)
+
+def Formulate(first_list,second_list,third_list,forth_list):
+    Dict={}
+    Dict.setdefault('type','gdf')
+    data_list=[]
+    for i in range(len(first_list)):
+        data_dict={}
+        data_dict.setdefault('time',third_list[i])
+        data_dict.setdefault('current',second_list[i])
+        data_dict.setdefault('voltage',first_list[i])
+        data_list.append(data_dict)
+    Dict.setdefault('data',data_list)
+    Dict.setdefault('ModStr',forth_list)
+    return Dict
 if __name__ == '__main__':
     r=0
     for fileaddresstlog in files:
@@ -106,8 +117,9 @@ if __name__ == '__main__':
         Voltage.append(List2)
         TIME.append(List3)
         MOD.append(List4)
-    jsonArr = json.dumps(MOD, ensure_ascii=True)
-    Update_gdf_json(jsonArr)
+    for i in range(len(MOD)):
+        Fin_MOD=Formulate(electric_current[i],Voltage[i],TIME[i],MOD[i])
+        Update_gdf_json(Fin_MOD)
     ID=input("请输入ID：")
     time,elec,volt,date=extract(ID)
     PLOT_ELE(time,elec,date)
