@@ -1,4 +1,5 @@
 import pandas as pd
+import couchdb
 import numpy as np
 import os
 import json
@@ -32,7 +33,7 @@ def read_log():
             list2.append(logline[1])
             list3.append(logline[0])
         count=count+1
-    return list1,list2,list3,list4
+    return list1,list2,list3,list4#代表时间、电流、电压、Mod
 
 # 文件列表
 files = []
@@ -88,14 +89,19 @@ def extract(id_no):
     return temp_time,temp_elec,temp_volt,temp_datetime
 def Update_gdf_json(data):
     #url = 'http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting'
-    # 调用get
-    #r = requests.get(url + params)  # 响应对象
+    # 调用get    #r = requests.get(url + params)  # 响应对象
     headers={'Content-Type':'application/json'}
     request  = urllib.request.Request(url='http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting/', headers=headers,data=json.dumps(data).encode('utf-8'))
     response = urllib.request.urlopen(request)
     print(response)
     print('状态码：',response.getcode())
-
+def Update_gdf_CouchDB(doc):
+    couch = couchdb.Server('http://47.96.146.116:5984/_utils')
+    couch.resource.credentials=('fxz_admin','fxz123456')
+    doc=json.dumps(doc).encode('utf-8')
+    db=couch.create('gdf')#['gdf']#['gdf'] # 新建数据库
+    db.save(doc)
+    print(doc)
 def Formulate(first_list,second_list,third_list,forth_list):
     Dict={}
     Dict.setdefault('type','gdf')
@@ -119,7 +125,7 @@ if __name__ == '__main__':
         MOD.append(List4)
     for i in range(len(MOD)):
         Fin_MOD=Formulate(electric_current[i],Voltage[i],TIME[i],MOD[i])
-        Update_gdf_json(Fin_MOD)
+        Update_gdf_CouchDB(Fin_MOD)
     ID=input("请输入ID：")
     time,elec,volt,date=extract(ID)
     PLOT_ELE(time,elec,date)
