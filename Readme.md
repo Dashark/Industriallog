@@ -24,8 +24,12 @@
 
 5.上传至服务器
 
-Update_result函数主要添加了函数update进行传输
+Update_result函数主要添加了函数update进行传输，但当数据量过大时会报错
 
 6.deal_gdf
 
-处理gdf文件，将每个gdf文件中的电压和电流分别读出并作出曲线图
+处理gdf文件上传数据至couhdb，将每个gdf文件中的电压和电流分别读出并作出曲线图
+
+7.deal_mtr、deal_gdf、deal_glp
+
+都是处理相对应文件并上传至Couchdb

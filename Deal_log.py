@@ -12,7 +12,7 @@ Function=[]
 Voltage=[]
 TIME=[]
 MOD=[]
-path = 'E:/Industey-log-data/XFlogback-220526/Log/'#可以把测试样例下载下来改成时间文件夹前面的地址
+path = 'E:/Industey-log-data/数据/Log/'#可以把测试样例下载下来改成时间文件夹前面的地址
 def read_log():
     list1=[]
     log = open(fileaddresstlog, 'r')
@@ -64,16 +64,16 @@ def PLOT_Vol():
         new_Voltage = unified_dimension_Y(Voltage[r])
         plt.plot(TIME[r], new_Voltage)
     plt.show()
-def PLOT_ELE(time1,elec1,date):
-    for r in range(len(time1)):
-        #new_electric_current=unified_dimension_Y(elec1[r])
-        #time=float(date)+float(time1)
-        time2=[]
-        for i in range(len(time1[r])):
-            x=float(time[r][i])+float(date[r])
-            time2.append(x)
-        plt.plot(time2, elec1[r])
-    plt.show()
+# def PLOT_ELE(time1,elec1,date):
+#     for r in range(len(time1)):
+#         #new_electric_current=unified_dimension_Y(elec1[r])
+#         #time=float(date)+float(time1)
+#         time2=[]
+#         for i in range(len(time1[r])):
+#             x=float(time[r][i])+float(date[r])
+#             time2.append(x)
+#         plt.plot(time2, elec1[r])
+#     plt.show()
 # def extract(id_no):
 #     temp_time=[]
 #     temp_elec=[]
@@ -101,7 +101,7 @@ def Update_gdf_json(data):
 def Update_gdf_CouchDB(file):
     couch = couchdb.Server("http://fxz_admin:fxz123456@47.96.146.116:5984/")
     document_gdf=json.dumps(file)
-    db=couch['log']#['gdf']#['gdf'] # 新建数据库
+    db=couch['log_2']#['gdf']#['gdf'] # 新建数据库
     #db= {'data': document_gdf}
     document_gdf= json.loads(document_gdf)
     db.save(document_gdf)

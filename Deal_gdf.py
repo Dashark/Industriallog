@@ -98,7 +98,7 @@ def Update_gdf_json(data):
 def Update_gdf_CouchDB(file):
     couch = couchdb.Server("http://fxz_admin:fxz123456@47.96.146.116:5984/")
     document_gdf=json.dumps(file)
-    db=couch['gdf']#['gdf']#['gdf'] # 新建数据库
+    db=couch['function-test-gdf']#['gdf']#['gdf'] # 新建数据库
     #db= {'data': document_gdf}
     document_gdf= json.loads(document_gdf)
     db.save(document_gdf)
