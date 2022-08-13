@@ -126,7 +126,8 @@ if __name__ == '__main__':
         MOD.append(List4)
     for i in range(len(MOD)):
         Fin_MOD=Formulate(electric_current[i],Voltage[i],TIME[i],MOD[i])
-        Update_gdf_CouchDB(Fin_MOD)
+        Update_gdf_json(Fin_MOD)
+        #Update_gdf_CouchDB(Fin_MOD)
     ID=input("请输入ID：")
     time,elec,volt,date=extract(ID)
     PLOT_ELE(time,elec,date)

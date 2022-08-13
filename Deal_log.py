@@ -119,7 +119,8 @@ if __name__ == '__main__':
     for i in range(len(Function)):
         Fin_MOD=Formulate(Function[i])
        # print(files[i])
-        Update_gdf_CouchDB(Fin_MOD)
+        #Update_gdf_CouchDB(Fin_MOD)
+        Update_gdf_json(Fin_MOD)
     # ID=input("请输入ID：")
     # time,elec,volt,date=extract(ID)
     # PLOT_ELE(time,elec,date)

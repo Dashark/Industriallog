@@ -66,12 +66,12 @@ def unified_dimension_Y(List1):
         newdata.append(float(List1[i])/arr_sum)
     return newdata
 
-def PLOT_Vol():
-    for r in range(len(TIME)):
-        # electric_current[r]=electric_current[r]/sum(electric_current[r])
-        new_Voltage = unified_dimension_Y(Voltage[r])
-        plt.plot(TIME[r], new_Voltage)
-    plt.show()
+# def PLOT_Vol():
+#     for r in range(len(TIME)):
+#         # electric_current[r]=electric_current[r]/sum(electric_current[r])
+#         new_Voltage = unified_dimension_Y(Voltage[r])
+#         plt.plot(TIME[r], new_Voltage)
+#     plt.show()
 # def PLOT_ELE(time1,elec1,date):
 #     for r in range(len(time1)):
 #         #new_electric_current=unified_dimension_Y(elec1[r])
@@ -141,7 +141,8 @@ if __name__ == '__main__':
     for i in range(len(MODLIST)):
         Fin_MOD=Formulate(electric_current[i],Voltage[i],TIME[i],MODLIST[i],MODSTR[i])
         print(files[i])
-        Update_gdf_CouchDB(Fin_MOD)
+        Update_gdf_json(Fin_MOD)
+        #Update_gdf_CouchDB(Fin_MOD)
     # ID=input("请输入ID：")
     # time,elec,volt,date=extract(ID)
     # PLOT_ELE(time,elec,date)

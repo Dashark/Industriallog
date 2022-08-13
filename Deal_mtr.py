@@ -140,7 +140,8 @@ if __name__ == '__main__':
     # for i in range(len(time)):
 #        , ID, CAP, Ave_ele_Current, Ave_volt, Hig_ele_Current, Hig_volt, Conjection, Result, logline_length
         Fin_MOD=Formulate(List1,List2)
-        Update_gdf_CouchDB(Fin_MOD)
+        #Update_gdf_CouchDB(Fin_MOD)
+        Update_gdf_json(Fin_MOD)
     # ID=input("请输入ID：")
     # time,elec,volt,date=extract(ID)
     # PLOT_ELE(time,elec,date)
