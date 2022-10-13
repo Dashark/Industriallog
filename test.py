@@ -43,16 +43,31 @@ def chae(Y1,Y2):
     VAR=np.var(delete)
     print(VAR)
 
+def calc_kappa(s):
+    d = dfx(s)
+    dd = ddfx(s)
+    return (dd)/((1+d*d)**(3.0/2.0))
+
 x_2=np.array(x_2)
 t_2=np.array(t_2)
 
 fig,ax = plt.subplots()
 # 二次拟合
 coef = np.polyfit(x_2, t_2, 2)
+fx=np.poly1d(coef)
+dfx = fx.deriv()  # deriv()方法可得该格式函数的导函数
+ddfx = dfx.deriv()
+print(coef)
 y_fit = np.polyval(coef, x_2)
 chae(y_fit,t_2)
 ax.plot(x_2,y_fit,'r')
 ax.plot(x_2, t_2, 'g')
+plt.show()
+k_buf = []
+for i in range(len(x_2)):
+    k = calc_kappa(x_2[i])
+    k_buf.append(k)
+plt.plot(k_buf)
 plt.show()
 
 # 找出其中的峰值/对称点
