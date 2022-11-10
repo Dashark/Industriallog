@@ -12,13 +12,13 @@ electric_current=[]
 Voltage=[]
 TIME=[]
 MOD=[]
-path = './MSPS/FireData/20210823111212/'#可以把测试样例下载下来改成时间文件夹前面的地址
+path = 'E:/Industey-log-data/name/Desktop/高压测试/'#可以把测试样例下载下来改成时间文件夹前面的地址
 def read_log():
     list1=[]
     list2=[]
     list3=[]
     list4=[]
-    log = open(fileaddresstlog, 'r', encoding='GBK')
+    log = open(fileaddresstlog, 'r')
     count=0
     for logline in log:
         data1={}
@@ -37,16 +37,25 @@ def read_log():
 
 # 文件列表
 files = []
+files_name=[]
+now_day=[1]
+now_year=[1]
+now_month=[1]
+now_hour=[1]
+now_minutes=[1]
+now_seconds=[1]
 for file in os.listdir(path):
-    print(file)
-    # if os.path.isfile(file):
     if file.endswith(".gdf"):
-        files.append(path + file)
-    else:
-        for file1 in os.listdir(path+file+'/'):
-            if file1.endswith(".gdf"):
-                files.append(path + file+'/' +file1)
+            files.append(path + file)
+            files_name.append(file)
+    # else:
+    #     for file1 in os.listdir(path+file+'/'):
+    #         if file1.endswith(".gdf"):
+    #             files.append(path + file+'/' +file1)
+    #             files_name.append(file1)
 data = pd.DataFrame()
+def cut(obj, sec):
+    return [obj[i:i+sec] for i in range(0,len(obj),sec)]#obj可以是字符串或队列
 def unified_dimension_Y(List1):
     arr_sum=1
     newdata=[]
@@ -117,18 +126,49 @@ def Formulate(first_list,second_list,third_list,forth_list):
     Dict.setdefault('data',data_list)
     Dict.setdefault('ModStr',forth_list)
     return Dict
+def judge_new_or_nor(Name):
+    if_new = 0
+    year = cut(Name, 4)
+    if int(year[1]) > int(now_year[0]):
+        now_year[0] = year[1]
+        if_new = 1
+    month_and_day = cut(year[2], 2)
+    if int(month_and_day[0]) > int(now_month[0]):
+        now_month[0] = month_and_day[0]
+        if_new = 1
+    if int(month_and_day[1]) > int(now_day[0]):
+        now_day[0] = month_and_day[1]
+        if_new = 1
+    hour = cut(Name, 13)
+    time = cut(hour[1], 2)
+    if int(time[0]) > int(now_hour[0]):
+        now_hour[0] = time[0]
+        if_new = 1
+    if int(time[1]) > int(now_minutes[0]):
+        now_hour[0] = time[1]
+        if_new = 1
+    if int(time[2]) > int(now_seconds[0]):
+        now_seconds[0]=time[2]
+        if_new = 1
+    if if_new == 1:
+        if_new=0
+        return 1
+    else:
+        return 0
 if __name__ == '__main__':
     r=0
-    for fileaddresstlog in files:
-        List1,List2,List3,List4=read_log()
-        electric_current.append(List1)
-        Voltage.append(List2)
-        TIME.append(List3)
-        MOD.append(List4)
+    for i in range(len(files)):
+        fileaddresstlog = files[i]
+        filename = files_name[i]
+        if judge_new_or_nor(filename) == 1:
+            List1,List2,List3,List4=read_log()
+            electric_current.append(List1)
+            Voltage.append(List2)
+            TIME.append(List3)
+            MOD.append(List4)
     for i in range(len(MOD)):
         Fin_MOD=Formulate(electric_current[i],Voltage[i],TIME[i],MOD[i])
-        Update_gdf_json(Fin_MOD)
-        #Update_gdf_CouchDB(Fin_MOD)
+        Update_gdf_CouchDB(Fin_MOD)
     ID=input("请输入ID：")
     time,elec,volt,date=extract(ID)
     PLOT_ELE(time,elec,date)
