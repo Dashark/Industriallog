@@ -135,6 +135,12 @@ def Formulate(first_list,second_list):
 
     return Dict
 def judge_new_or_nor(Name):
+    """
+    1. 一次性把文件名cut出来形成['高压测试','20220207_084509']
+    2. 使用Python库的datetime的strptime函数直接转换时间
+    3. 最新的时间要存盘的, 程序初始化从文件中得到时间(now_year这个变量)
+    4. 2个datetime可以直接比较的
+    """
     if_new = 0
     year = cut(Name, 4)
     if int(year[1]) > int(now_year[0]):
