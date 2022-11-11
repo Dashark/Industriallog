@@ -6,6 +6,10 @@ import json
 import urllib.request
 import matplotlib
 import matplotlib.pyplot as plt
+from datetime import datetime
+import sys,os
+
+
 from matplotlib import style
 import requests
 Function=[]
@@ -42,12 +46,7 @@ def read_log():
 # 文件列表
 files = []
 files_name=[]
-now_day=[1]
-now_year=[1]
-now_month=[1]
-now_hour=[1]
-now_minutes=[1]
-now_seconds=[1]
+
 for file in os.listdir(path):
     if file.endswith(".log"):
             files.append(path + file)
@@ -121,29 +120,51 @@ def Formulate(first_list):
     Dict.setdefault('type','log')
     Dict.setdefault('ModFunc',first_list)
     return Dict
+def Write_Pointrow(filename,num,str):
+    Filename = open(filename, 'r+')
+    flist = Filename.readlines()
+    flist[num] = str
+    f = open(filename, 'w+')
+    f.writelines(flist)
+
+
 def judge_new_or_nor(Name):
     if_new = 0
-    year = cut(Name, 4)
-    if int(year[0]) > int(now_year[0]):
-        now_year[0] = year[0]
+    year = cut(Name,15)
+    with open('E:/Industey-log-data/name/Desktop/time_temp.txt', encoding='utf-8') as file:
+        content1 = file.read()
+        content1.rstrip()
+    content = content1.split('\n')
+    new_year = content[0]
+    new_month = content[1]
+    new_day = content[2]
+    new_hour = content[3]
+    new_minute = content[4]
+    new_second = content[5]
+    DATE = datetime.strptime(year[0], '%Y%m%d_%H%M%S')
+    if DATE.year > int(new_year):
+        new_year = str(DATE.year)+'\n'
+        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp.txt',0,new_year)
         if_new = 1
-    month_and_day = cut(year[1], 2)
-    if int(month_and_day[0]) > int(now_month[0]):
-        now_month[0] = month_and_day[0]
+    if DATE.month > int(new_month):
+        new_month = str(DATE.month)+'\n'
+        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp.txt', 1, new_month)
         if_new = 1
-    if int(month_and_day[1]) > int(now_day[0]):
-        now_day[0] = month_and_day[1]
+    if  DATE.day > int(new_day):
+        new_day = str(DATE.day)+'\n'
+        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp.txt', 2, new_day)
         if_new = 1
-    hour = cut(Name, 9)
-    time = cut(hour[1], 2)
-    if int(time[0]) > int(now_hour[0]):
-        now_hour[0] = time[0]
+    if  DATE.hour > int(new_hour):
+        new_hour = str(DATE.hour)+'\n'
+        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp.txt', 3, new_hour)
         if_new = 1
-    if int(time[1]) > int(now_minutes[0]):
-        now_hour[0] = time[1]
+    if  DATE.minute > int(new_minute):
+        new_minute = str(DATE.minute)+'\n'
+        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp.txt', 4, new_minute)
         if_new = 1
-    if int(time[2]) > int(now_seconds[0]):
-        now_seconds[0]=time[2]
+    if int(DATE.second) > int(new_second):
+        new_second=str(DATE.second)+'\n'
+        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp.txt', 5, new_second)
         if_new = 1
     if if_new == 1:
         if_new=0
