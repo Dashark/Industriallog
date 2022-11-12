@@ -135,80 +135,31 @@ def Formulate(first_list,second_list):
     Dict.setdefault('data',data_list)
 
     return Dict
-def Write_Pointrow(filename,num,str):
-    Filename = open(filename, 'r+')
-    flist = Filename.readlines()
-    flist[num] = str
-    f = open(filename, 'w+')
-    f.writelines(flist)
-def judge_new_or_nor(Name):
     """
     1. 一次性把文件名cut出来形成['高压测试','20220207_084509']
     2. 使用Python库的datetime的strptime函数直接转换时间
     3. 最新的时间要存盘的, 程序初始化从文件中得到时间(now_year这个变量)
     4. 2个datetime可以直接比较的
     """
-    if_new = 0
-    year = Name[4:19]
-    with open('E:/Industey-log-data/name/Desktop/time_temp_mtr.txt', encoding='utf-8') as file:
-        content1 = file.read()
-        content1.rstrip()
-    content = content1.split('\n')
-    new_year = content[0]
-    new_month = content[1]
-    new_day = content[2]
-    new_hour = content[3]
-    new_minute = content[4]
-    new_second = content[5]
-    DATE = datetime.strptime(year, '%Y%m%d_%H%M%S')
-    if DATE.year > int(new_year):
-        new_year = str(DATE.year) + '\n'
-        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp_mtr.txt', 0, new_year)
-        if_new = 1
-    if DATE.month > int(new_month):
-        new_month = str(DATE.month) + '\n'
-        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp_mtr.txt', 1, new_month)
-        if_new = 1
-    if DATE.day > int(new_day):
-        new_day = str(DATE.day) + '\n'
-        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp_mtr.txt', 2, new_day)
-        if_new = 1
-    if DATE.hour > int(new_hour):
-        new_hour = str(DATE.hour) + '\n'
-        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp_mtr.txt', 3, new_hour)
-        if_new = 1
-    if DATE.minute > int(new_minute):
-        new_minute = str(DATE.minute) + '\n'
-        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp_mtr.txt', 4, new_minute)
-        if_new = 1
-    if int(DATE.second) > int(new_second):
-        new_second = str(DATE.second) + '\n'
-        Write_Pointrow('E:/Industey-log-data/name/Desktop/time_temp_mtr.txt', 5, new_second)
-        if_new = 1
-    if if_new == 1:
-        if_new = 0
-        return 1
-    else:
-        return 0
 if __name__ == '__main__':
     r=0
+    latest_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
+    max_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
+    with open('time_temp_mtr.txt', 'r', encoding='utf-8') as file:
+        content1 = file.readline()   # 从文件中读取存储的时间
+        latest_date = datetime.strptime(content1, "%Y-%m-%d %H:%M:%S")
     for i in range(len(files)):
         fileaddresstlog = files[i]
         filename = files_name[i]
-        if judge_new_or_nor(filename) == 1:
+        file_date = datetime.strptime(filename[4:19], '%Y%m%d_%H%M%S')
+        if file_date > latest_date:  # 新时间文件可以上传
             List1,List2=read_log()
-            # ID.append(List3)
-            # CAP.append(List3)
-            # Ave_ele_Current.append(List5)
-            # Ave_volt.append(List6)
-            # Hig_ele_Current.append(List7)
-            # Hig_volt.append(List8)
-            # Conjection.append(List9)
-            # Result.append(List10)
-        # for i in range(len(time)):
-    #        , ID, CAP, Ave_ele_Current, Ave_volt, Hig_ele_Current, Hig_volt, Conjection, Result, logline_length
             Fin_MOD=Formulate(List1,List2)
-            Update_gdf_CouchDB(Fin_MOD)
+            Update_gdf_json(Fin_MOD)
+            if file_date > max_date:
+                max_date = file_date
+    with open('time_temp_mtr.txt', 'w', encoding='utf-8') as file:
+        file.write(max_date.strftime("%Y-%m-%d %H:%M:%S"))
     # ID=input("请输入ID：")
     # time,elec,volt,date=extract(ID)
     # PLOT_ELE(time,elec,date)
