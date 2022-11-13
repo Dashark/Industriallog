@@ -23,7 +23,7 @@ Result=[]
 path = 'E:/Industey-log-data/name/Desktop/高压测试/'#可以把测试样例下载下来改成时间文件夹前面的地址
 def read_log():
     list1=[]
-
+#
     list3=[]
     log = open(fileaddresstlog, 'r')
     count=0
