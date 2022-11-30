@@ -9,30 +9,17 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import style
 import requests
-Info=[]
-Ave_ele_Current=[]
-time=[]
-ID=[]
-CAP=[]
-Ave_ele_Current=[]
-Ave_volt=[]
-Hig_ele_Current=[]
-Hig_volt=[]
-Conjection=[]
-Result=[]
-path = 'E:/Industey-log-data/name/Desktop/高压测试/'#可以把测试样例下载下来改成时间文件夹前面的地址
-def read_log():
-    list1=[]
-#
+path = '.'#可以把测试样例下载下来改成时间文件夹前面的地址
+def read_log(file):
+    list1={}
     list3=[]
-    log = open(fileaddresstlog, 'r')
+    log = open(file, 'r')
     count=0
     for logline in log:
         data1={}
         if count<5:
             logline1=logline.split(':')
-            data1[logline1[0]]=logline1[1].strip('/n')
-            list1.append(data1)
+            list1[logline1[0]]=logline1[1].strip('/n')
         elif count>5:
             logline = logline.split('	')
             list2 = []
@@ -42,41 +29,9 @@ def read_log():
                 else:
                     list2.append(' ')
             list3.append(list2)
-            # if len(logline)>=1:
-            #     list2.append(logline[0])
-            #     if len(logline)>=2:
-            #         list3.append(logline[1])
-            #         if len(logline) >= 3:
-            #             list4.append(logline[2])
-            #             if len(logline)>=4:
-            #                 list5.append(logline[3])
-            #                 if len(logline)>=5:
-            #                     list6.append(logline[4])
-            #                     if len(logline) >= 6:
-            #                         list7.append(logline[5])
-            #                         if len(logline) >= 7:
-            #                             list8.append(logline[6])
-            #                             if len(logline) >= 8:
-            #                                 list9.append(logline[7])
-            #                                 if len(logline) >= 9:
-            #                                     list10.append(logline[8])
         count=count+1
-#        , list3, list4, list5, list6, list7, list8, list9, list10, len(logline)
     return list1,list3#代表时间、电流、电压、Mod
 
-# 文件列表
-files = []
-files_name=[]
-now_day=[1]
-now_year=[1]
-now_month=[1]
-now_hour=[1]
-now_minutes=[1]
-now_seconds=[1]
-for file in os.listdir(path):
-    if file.endswith(".mtr"):
-            files.append(path + file)
-            files_name.append(file)
 #     # else:
 #     #     for file1 in os.listdir(path+file+'/'):
 #     #         if file1.endswith(".mtr"):
@@ -112,7 +67,7 @@ def Formulate(first_list,second_list):
     Dict={}
     Dict.setdefault('type','mtr')
     data_list=[]
-    Dict.setdefault('Mtr_Info', first_list[0])
+    Dict.setdefault('ModStr', first_list)
     i=0
     while i<len(second_list):
         data_dict={}
@@ -132,7 +87,7 @@ def Formulate(first_list,second_list):
         data_dict.setdefault('Result', second_list[i][8])
         data_list.append(data_dict)
         i=i+1
-    Dict.setdefault('data',data_list)
+    Dict.setdefault('ModList',data_list)
 
     return Dict
     """
@@ -148,12 +103,18 @@ if __name__ == '__main__':
     with open('E:/Industey-log-data/Industriallog/time_temp_mtr.txt', 'r', encoding='utf-8') as file:
         content1 = file.readline()   # 从文件中读取存储的时间
         latest_date = datetime.strptime(content1, "%Y-%m-%d %H:%M:%S")
+    # 文件列表
+    files = []
+    files_name=[]
+    for file in os.listdir(path):
+        if file.endswith(".mtr"):
+            files.append(path + file)
+            files_name.append(file)
     for i in range(len(files)):
-        fileaddresstlog = files[i]
         filename = files_name[i]
         file_date = datetime.strptime(filename[4:19], '%Y%m%d_%H%M%S')
         if file_date > latest_date:  # 新时间文件可以上传
-            List1,List2=read_log()
+            List1,List2=read_log(files[i])
             Fin_MOD=Formulate(List1,List2)
             Update_gdf_json(Fin_MOD)
             if file_date > max_date:
