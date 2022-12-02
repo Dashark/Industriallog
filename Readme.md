@@ -33,3 +33,9 @@ Update_result函数主要添加了函数update进行传输，但当数据量过�
 7.deal_mtr、deal_gdf、deal_glp
 
 都是处理相对应文件并上传至Couchdb
+
+# Docker
+
+在工作目录中执行：docker build -t IndustrialLog:1.0
+容器运行：docker start IndustrialLog
+容器停止：docker stop IndustrialLog
