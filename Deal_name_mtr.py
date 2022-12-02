@@ -145,9 +145,10 @@ if __name__ == '__main__':
     r=0
     latest_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
     max_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
-    with open('E:/Industey-log-data/Industriallog/time_temp_mtr.txt', 'r', encoding='utf-8') as file:
-        content1 = file.readline()   # 从文件中读取存储的时间
-        latest_date = datetime.strptime(content1, "%Y-%m-%d %H:%M:%S")
+    if os.path.exists('time_temp_mtr.txt'):
+        with open('time_temp_mtr.txt', 'r', encoding='utf-8') as file:
+            content1 = file.readline()   # 从文件中读取存储的时间
+            latest_date = datetime.strptime(content1, "%Y-%m-%d %H:%M:%S")
     for i in range(len(files)):
         fileaddresstlog = files[i]
         filename = files_name[i]
