@@ -13,7 +13,7 @@ path = '/opt/data/高压测试/' # docker中映射的目录
 def read_log(file):
     list1={}
     list3=[]
-    log = open(file, 'r')
+    log = open(file, 'r', encoding='gbk')  # Window系统中文编码是GBK的
     count=0
     for logline in log:
         data1={}
@@ -109,7 +109,7 @@ if __name__ == '__main__':
     files = []
     files_name=[]
     if os.path.exists(path):
-        for file in os.listdir(path).sort():
+        for file in os.listdir(path):   # 看起来缺省上正确排序，不知道未来有没有问题
             if file.endswith(".mtr"):
                 files.append(path + file)
                 files_name.append(file)
