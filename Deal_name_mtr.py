@@ -9,7 +9,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import style
 import requests
-path = '.'#可以把测试样例下载下来改成时间文件夹前面的地址
+path = '/opt/data/高压测试/' # docker中映射的目录
 def read_log(file):
     list1={}
     list3=[]
@@ -100,17 +100,22 @@ if __name__ == '__main__':
     r=0
     latest_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
     max_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
-    if os.path.exists('time_temp_mtr.txt'):
-        with open('time_temp_mtr.txt', 'r', encoding='utf-8') as file:
+    timebuf_file = path + 'time_temp_mtr.txt'
+    if os.path.exists(timebuf_file):
+        with open(timebuf_file, 'r', encoding='utf-8') as file:
             content1 = file.readline()   # 从文件中读取存储的时间
             latest_date = datetime.strptime(content1, "%Y-%m-%d %H:%M:%S")
     # 文件列表
     files = []
     files_name=[]
-    for file in os.listdir(path):
-        if file.endswith(".mtr"):
-            files.append(path + file)
-            files_name.append(file)
+    if os.path.exists(path):
+        for file in os.listdir(path).sort():
+            if file.endswith(".mtr"):
+                files.append(path + file)
+                files_name.append(file)
+    else:
+        print(path, "doesn't exist. Check docker dir map !")
+    print(files_name)
     for i in range(len(files)):
         filename = files_name[i]
         file_date = datetime.strptime(filename[4:19], '%Y%m%d_%H%M%S')
@@ -120,7 +125,7 @@ if __name__ == '__main__':
             Update_gdf_json(Fin_MOD)
             if file_date > max_date:
                 max_date = file_date
-    with open('time_temp_mtr.txt', 'w', encoding='utf-8') as file:
+    with open(timebuf_file, 'w', encoding='utf-8') as file:
         file.write(max_date.strftime("%Y-%m-%d %H:%M:%S"))
     # ID=input("请输入ID：")
     # time,elec,volt,date=extract(ID)

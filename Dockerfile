@@ -9,7 +9,21 @@ ENV CODE_DIR=/opt
 ENV DOCKER_SCRIPTS=$CODE_DIR/Industriallog
  
 #将scripts下的文件复制到镜像中的DOCKER_SCRIPTS目录
+#设置国内源
+COPY ./sources.list /etc/apt/sources.list
+
+ADD ./crontab /etc/cron.d/crontab
 COPY ./* $DOCKER_SCRIPTS/
+
+#安装软件
+RUN apt-get update -y && apt-get install -y vim && apt-get install -y cron && touch /var/log/cron.log
+
+# 赋于运行权限
+RUN chmod 0644 /etc/cron.d/crontab
+# 运行任务
+RUN crontab /etc/cron.d/crontab
+
+
 
 # 设置国内镜像源
 RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
@@ -22,6 +36,6 @@ RUN pip install -r $DOCKER_SCRIPTS/requirements.txt
  
 #执行镜像中的provision.sh脚本
 
-#RUN $DOCKER_SCRIPTS/Deal_name_mtr.py
-#RUN $DOCKER_SCRIPTS/run.sh
-RUN echo "hallo word"
+RUN echo "hello world"
+# 一直跑
+CMD ["cron", "-f"]
