@@ -7,7 +7,7 @@ LABEL MAINTAINER=chace.min@qq.com
 #设置环境变量
 ENV CODE_DIR=/opt
 ENV DOCKER_SCRIPTS=$CODE_DIR/Industriallog
- 
+
 #将scripts下的文件复制到镜像中的DOCKER_SCRIPTS目录
 #设置国内源
 COPY ./sources.list /etc/apt/sources.list
@@ -37,7 +37,8 @@ RUN chmod 777 $DOCKER_SCRIPTS/*
 # 安装支持
 RUN pip install -r $DOCKER_SCRIPTS/requirements.txt
  
-#执行镜像中的provision.sh脚本
+#设置时区，解决windows定时任务不生效问题
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 RUN echo "hello world"
 # 一直跑
