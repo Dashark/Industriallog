@@ -13,7 +13,10 @@ ENV DOCKER_SCRIPTS=$CODE_DIR/Industriallog
 COPY ./sources.list /etc/apt/sources.list
 
 ADD ./crontab /etc/cron.d/crontab
-COPY ./* $DOCKER_SCRIPTS/
+COPY ./*.py $DOCKER_SCRIPTS/
+COPY ./requirements.txt $DOCKER_SCRIPTS/
+COPY ./sources.list $DOCKER_SCRIPTS/
+COPY ./run.sh $DOCKER_SCRIPTS/
 
 #安装软件
 RUN apt-get update -y && apt-get install -y vim && apt-get install -y cron && touch /var/log/cron.log
