@@ -9,7 +9,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import style
 import requests
-path = '/opt/data/高压测试/' # docker中映射的目录
 def read_log(file):
     list1={}
     list3=[]
@@ -97,10 +96,11 @@ def Formulate(first_list,second_list):
     4. 2个datetime可以直接比较的
     """
 if __name__ == '__main__':
-    r=0
+    OP = '高压测试/'
+    PATH = '/opt/data/' # docker中映射的目录
     latest_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
     max_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
-    timebuf_file = path + 'time_temp_mtr.txt'
+    timebuf_file = PATH + 'time_temp_mtr.txt'
     if os.path.exists(timebuf_file):
         with open(timebuf_file, 'r', encoding='utf-8') as file:
             content1 = file.readline()   # 从文件中读取存储的时间
@@ -108,19 +108,19 @@ if __name__ == '__main__':
     # 文件列表
     files = []
     files_name=[]
-    if os.path.exists(path):
-        for file in os.listdir(path):   # 看起来缺省上正确排序，不知道未来有没有问题
+    if os.path.exists(PATH + OP):
+        for file in os.listdir(PATH + OP):   # 看起来缺省上正确排序，不知道未来有没有问题
             if file.endswith(".mtr"):
-                files.append(path + file)
+                files.append(PATH + OP + file)
                 files_name.append(file)
     else:
-        print(path, "doesn't exist. Check docker dir map !")
+        print(PATH, "doesn't exist. Check docker dir map !")
     print(files_name)
-    for i in range(len(files)):
+    for i, file in enumerate(files):
         filename = files_name[i]
         file_date = datetime.strptime(filename[4:19], '%Y%m%d_%H%M%S')
         if file_date > latest_date:  # 新时间文件可以上传
-            List1,List2=read_log(files[i])
+            List1,List2=read_log(file)
             Fin_MOD=Formulate(List1,List2)
             Update_gdf_json(Fin_MOD)
             if file_date > max_date:
