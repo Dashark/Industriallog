@@ -116,7 +116,7 @@ if __name__ == '__main__':
                 files_name.append(file)
     else:
         print(PATH, "doesn't exist. Check docker dir map !")
-    print(files_name)
+    # print(files_name)
     for i, file in enumerate(files):
         filename = files_name[i]
         file_date = datetime.strptime(filename[4:19], '%Y%m%d_%H%M%S')
