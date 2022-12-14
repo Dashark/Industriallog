@@ -95,7 +95,7 @@ def Formulate(first_list,second_list):
     4. 2个datetime可以直接比较的
     """
 if __name__ == '__main__':
-    OP = ['检验功能/', '功能测试/', '高压测试/', '不合格项/']
+    OP = '高压测试/'
     PATH = '/opt/data/' # docker中映射的目录
     latest_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
     max_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
