@@ -94,17 +94,19 @@ def Formulate(first_list,second_list):
     3. 最新的时间要存盘的, 程序初始化从文件中得到时间(now_year这个变量)
     4. 2个datetime可以直接比较的
     """
-if __name__ == '__main__':
-    OP = ['检验功能/', '功能测试/', '高压测试/', '不合格项/']
-    PATH = '/opt/data/' # docker中映射的目录
-    latest_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
-    max_date = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
-    timebuf_file = PATH + OP + 'time_temp_mtr.txt'
-    if os.path.exists(timebuf_file):
-        with open(timebuf_file, 'r', encoding='utf-8') as file:
+def load_date(fname):
+    date1 = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
+    if os.path.exists(fname):
+        with open(fname, 'r', encoding='utf-8') as file:
             content1 = file.readline()   # 从文件中读取存储的时间
-            latest_date = datetime.strptime(content1, "%Y-%m-%d %H:%M:%S")
-            max_date = latest_date
+            date1 = datetime.strptime(content1, "%Y-%m-%d %H:%M:%S")
+    return date1
+
+def upload_subdir(op):
+    PATH = '/opt/data/' # docker中映射的目录
+    timebuf_file = PATH + OP + 'time_temp_mtr.txt'
+    latest_date = load_date(timebuf_file)
+    max_date = latest_date
     # 文件列表
     files = []
     files_name=[]
@@ -131,3 +133,7 @@ if __name__ == '__main__':
     # time,elec,volt,date=extract(ID)
     # PLOT_ELE(time,elec,date)
     # print('end')
+if __name__ == '__main__':
+    OP = ['检验功能/', '功能测试/', '高压测试/', '不合格项/']
+    for op in OP:
+        upload_subdir(op)
