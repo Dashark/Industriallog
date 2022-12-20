@@ -21,11 +21,11 @@ def read_log(file):
         elif count>5:
             logline = logline.split('	')
             list2 = []
-            for i in range(0,9):
-                if i<len(logline):
+            for i in range(0,9):  # 标准切割出9份
+                if i<len(logline):  # 实际上存在不足
                     list2.append(logline[i])
                 else:
-                    list2.append(' ')
+                    list2.append('*') # 不足部分补任意值
             list3.append(list2)
         count=count+1
     return list1,list3#代表时间、电流、电压、Mod
