@@ -40,6 +40,6 @@ RUN pip install -r $DOCKER_SCRIPTS/requirements.txt
 #设置时区，解决windows定时任务不生效问题
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
-RUN echo "hello world"
+# RUN echo "hello world"
 # 一直跑
 CMD ["cron", "-f"]

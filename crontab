@@ -1,2 +1,3 @@
+# one minute
 PATH="/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 */1 * * * * sh /opt/Industriallog/run.sh

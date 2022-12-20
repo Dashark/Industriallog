@@ -3,3 +3,4 @@
 python /opt/Industriallog/Deal_name_mtr.py
 echo "hello world" >> /opt/Industriallog/log.txt
 # 系统运行一直
+# 更新的

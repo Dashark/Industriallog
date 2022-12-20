@@ -104,16 +104,16 @@ def load_date(fname):
 
 def upload_subdir(op):
     PATH = '/opt/data/' # docker中映射的目录
-    timebuf_file = PATH + OP + 'time_temp_mtr.txt'
+    timebuf_file = PATH + op + 'time_temp_mtr.txt'
     latest_date = load_date(timebuf_file)
     max_date = latest_date
     # 文件列表
     files = []
     files_name=[]
-    if os.path.exists(PATH + OP):
-        for file in os.listdir(PATH + OP):   # 看起来缺省上正确排序，不知道未来有没有问题
+    if os.path.exists(PATH + op):
+        for file in os.listdir(PATH + op):   # 看起来缺省上正确排序，不知道未来有没有问题
             if file.endswith(".mtr"):
-                files.append(PATH + OP + file)
+                files.append(PATH + op + file)
                 files_name.append(file)
     else:
         print(PATH, "doesn't exist. Check docker dir map !")
