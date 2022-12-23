@@ -48,11 +48,19 @@ def cut(obj, sec):
 def Update_gdf_json(data):
     #url = 'http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting'
     # 调用get    #r = requests.get(url + params)  # 响应对象
-    headers={'Content-Type':'application/json'}
-    request  = urllib.request.Request(url='http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting/', headers=headers,data=json.dumps(data).encode('utf-8'))
-    response = urllib.request.urlopen(request)
-    print(response)
-    print('状态码：',response.getcode())
+    try:
+        headers={'Content-Type':'application/json'}
+        request  = urllib.request.Request(url='http://182.92.66.252:8092/prod-api/smart/threePart/insertTesting/', headers=headers,data=json.dumps(data).encode('utf-8'))
+        response = urllib.request.urlopen(request, timeout=5)
+        print(response.read().decode('utf-8'))
+        return True
+    except urllib.error.URLError as e:
+        print(e.reason)
+        return False
+    except urllib.error.HTTPError as e:
+        print(e.code)
+        print(e.reason)
+        return False
 def Update_gdf_CouchDB(file):
     couch = couchdb.Server("http://fxz_admin:fxz123456@47.96.146.116:5984/")
     document_gdf=json.dumps(file)
@@ -124,7 +132,8 @@ def upload_subdir(op):
         if file_date > latest_date:  # 新时间文件可以上传
             List1,List2=read_log(file)
             Fin_MOD=Formulate(List1,List2)
-            Update_gdf_json(Fin_MOD)
+            if Update_gdf_json(Fin_MOD) == False:
+                break
             if file_date > max_date:
                 max_date = file_date
     with open(timebuf_file, 'w', encoding='utf-8') as file:
