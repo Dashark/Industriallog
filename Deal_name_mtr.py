@@ -1,14 +1,9 @@
-import pandas as pd
 import couchdb
 import numpy as np
 import os
 import json
 import urllib.request
 from datetime import datetime
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib import style
-import requests
 def read_log(file):
     list1={}
     list3=[]
@@ -34,7 +29,6 @@ def read_log(file):
 #     #     for file1 in os.listdir(path+file+'/'):
 #     #         if file1.endswith(".mtr"):
 #     #             files.append(path + file+'/' +file1)
-data = pd.DataFrame()
 def unified_dimension_Y(List1):
     arr_sum=1
     newdata=[]
