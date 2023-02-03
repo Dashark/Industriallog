@@ -74,7 +74,7 @@ def load_date(fname):
 
 def upload_subdir(op):
     PATH = '/opt/data/' # docker中映射的目录
-    timebuf_file = PATH + op + 'time_temp_mtr.txt'
+    timebuf_file = PATH + op + 'time_temp_gdf.txt'
     latest_date = load_date(timebuf_file)
     max_date = latest_date
     # 文件列表
@@ -90,9 +90,12 @@ def upload_subdir(op):
     # print(files_name)
     for i, file in enumerate(files):
         filename = files_name[i]
-        file_date = datetime.strptime(filename[4:19], '%Y%m%d_%H%M%S')
+        try:
+            file_date = datetime.strptime(filename[4:19], '%Y%m%d_%H%M%S')
+        except ValueError as ve:
+            print('ValueError Raised: ', ve)
         if file_date > latest_date:  # 新时间文件可以上传
-            current, voltage, stamp, mod =read_log()
+            current, voltage, stamp, mod =read_log(file)
             Fin_MOD=Formulate(current,voltage,stamp,mod)
             try:
                 Update_gdf_json(Fin_MOD)
