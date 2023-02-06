@@ -3,6 +3,7 @@ import numpy as np
 import os
 import json
 import urllib.request
+import urllib.error
 from datetime import datetime
 def read_log(file):
     list1=[]
@@ -77,6 +78,7 @@ def upload_subdir(op):
     timebuf_file = PATH + op + 'time_temp_gdf.txt'
     latest_date = load_date(timebuf_file)
     max_date = latest_date
+    file_date = latest_date
     # 文件列表
     files = []
     files_name=[]
@@ -91,16 +93,20 @@ def upload_subdir(op):
     for i, file in enumerate(files):
         filename = files_name[i]
         try:
-            file_date = datetime.strptime(filename[4:19], '%Y%m%d_%H%M%S')
+            if len(filename) <= 32:   # 正常文件名
+                file_date = datetime.strptime(filename[4:19], '%Y%m%d_%H%M%S')
+            else:
+                file_date = datetime.strptime(filename[9:24], '%Y%m%d_%H%M%S')
         except ValueError as ve:
             print('ValueError Raised: ', ve)
+            continue
         if file_date > latest_date:  # 新时间文件可以上传
             current, voltage, stamp, mod =read_log(file)
             Fin_MOD=Formulate(current,voltage,stamp,mod)
             try:
                 Update_gdf_json(Fin_MOD)
-            except Exception as e:
-                print(e)
+            except urllib.error.URLError as ue:
+                print('URLError Raised: ', ue)
                 break
             if file_date > max_date:
                 max_date = file_date
@@ -111,6 +117,7 @@ def upload_subdir(op):
     # PLOT_ELE(time,elec,date)
     # print('end')
 if __name__ == '__main__':
-    OP = ['检验功能/', '功能测试/', '高压测试/', '不合格项/']
+    OP = ['检验功能/', '功能测试/', '高压测试/', '不合格项/', '振动测试/','高温测试/', '烧写ID/']
+    # OP = ['检验功能/', '功能测试/', '高压测试/', '不合格项/']
     for op in OP:
         upload_subdir(op)
