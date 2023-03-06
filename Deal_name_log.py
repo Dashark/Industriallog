@@ -19,7 +19,7 @@ MOD=[]
 path = 'E:/Industey-log-data/name/Desktop/Log7月21-9月22日/'#可以把测试样例下载下来改成时间文件夹前面的地址
 def read_log():
     list1=[]
-    log = open(fileaddresstlog, 'r')
+    log = open(fileaddresstlog, 'r', encoding='gbk')
     for logline in log:
         logline=logline.replace('       ','&')
         logline= logline.replace(' ', '&')

@@ -6,20 +6,12 @@ import numpy as np
 import os
 import xlrd
 from xlutils.copy import copy
+from datetime import datetime
 
 import requests
 path = 'E:/Industey-log-data/XFlogback-220526/Log/'
-def read_log():
-    #f = xlwt.Workbook()
-    # f = xlrd.open_workbook(fileaddress)
-    # sheets = f.sheet_names()
-    # worksheet = f.sheet_by_name(sheets[0])
-    #sheet1 = f.add_sheet('log1')
-    log = open(fileaddresstlog, 'r')
-    # new_workbook = copy(f)  # 将xlrd对象拷贝转化为xlwt对象
-    # rows_old = worksheet.nrows
-    # new_worksheet = new_workbook.get_sheet(0)  # 获取转化后工作簿中的第一个表格
-    #exclbegin=
+def read_log(file):
+    log = open(file, 'r', encoding='gbk')
     r = 0
     for logline in log:
         logline1=logline.replace('       ','&')
@@ -39,36 +31,33 @@ def update(params):
     print('状态码：', r.status_code)
     print('文本响应内容：', r.text)
 
-# def write_excel(r, table, sheet1):
-#     print(r)
-#     # f = xlwt.Workbook()
-#     #   sheet1=f.add_sheet('log')
-#     if table == 0:
-#         row0 = ['key', 'value']
-#     else:
-#         row0 = table
-#     for i in range(0, len(row0)):
-#         sheet1.write(r, i, row0[i])
 
-
-# 文件列表
-files = []
-for file in os.listdir(path):
-    if file.endswith(".log"):
-        files.append(path + file)
-
-# 定义一个空的dataframe
-data = pd.DataFrame()
-
-# 遍历所有文件
-
-    # datai = pd.read_csv(file, encoding='gbk')
-    # datai_len = len(datai)
-    # data = data.append(datai)  # 添加到总的数据中
-    # print('读取%i行数据,合并后文件%i列, 名称：%s' % (datai_len, len(data.columns), file.split('/')[-1]))
+def load_date(fname):
+    date1 = datetime(1970, 1, 1, 0, 0, 0)   # 初始一个古老时间
+    if os.path.exists(fname):
+        with open(fname, 'r', encoding='utf-8') as file:
+            content1 = file.readline()   # 从文件中读取存储的时间
+            date1 = datetime.strptime(content1, "%Y-%m-%d %H:%M:%S")
+    return date1
 
 if __name__ == '__main__':
-    for fileaddresstlog in files:
+    PATH = '/opt/data/' # docker中映射的目录
+    timebuf_file = PATH + op + 'time_temp_log.txt'
+    latest_date = load_date(timebuf_file)
+    max_date = latest_date
+    file_date = latest_date
+    # 文件列表
+    files = []
+    files_name=[]
+    if os.path.exists(PATH + op):
+        for file in os.listdir(PATH + op):   # 看起来缺省上正确排序，不知道未来有没有问题
+            if file.endswith(".log"):
+                files.append(PATH + op + file)
+                files_name.append(file)
+    else:
+        print(PATH, "doesn't exist. Check docker dir map !")
+    for file in files:
         #fileaddress = 'E:/Industey-log-data/MSPS/Log/log_Data_1.xls'
-        read_log()
+        # TODO 缺少文件时间处理
+        read_log(file)
         print('end')
