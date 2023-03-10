@@ -15,9 +15,9 @@ def read_log(file):
     for logline in log:
         data1={}
         if count<8:
-            logline1=logline.split(':')
-            logline2=logline1[0].split('->')
-            data1[logline2[1]]=logline1[1].strip('/n')
+            logline1=logline.split(':', 1)
+            logline2=logline1[0].split('->', 1)
+            data1[logline2[1]]=logline1[1].strip()
             list4.append(data1)
         elif count>8:
             logline = logline.split('	')
@@ -102,6 +102,7 @@ def upload_subdir(op):
             continue
         if file_date > latest_date:  # 新时间文件可以上传
             current, voltage, stamp, mod =read_log(file)
+            mod.append({'测试项目':filename[0, 4]})
             Fin_MOD=Formulate(current,voltage,stamp,mod)
             try:
                 Update_gdf_json(Fin_MOD)
