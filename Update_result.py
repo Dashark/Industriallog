@@ -1,15 +1,11 @@
-import xlwt
-import xlrd
-import io
-import pandas as pd
 import numpy as np
 import os
-import xlrd
-from xlutils.copy import copy
+import json
+import urllib.request
+import urllib.error
 from datetime import datetime
 
 import requests
-path = 'E:/Industey-log-data/XFlogback-220526/Log/'
 def read_log(file):
     log = open(file, 'r', encoding='gbk')
     r = 0
@@ -27,9 +23,9 @@ def update(params):
 
     # 调用get
     r = requests.get(url+params)    # 响应对象
-    print('请求url：', r.url)
-    print('状态码：', r.status_code)
-    print('文本响应内容：', r.text)
+    print('请求url:', r.url)
+    print('状态码:', r.status_code)
+    print('文本响应内容:', r.text)
 
 
 def load_date(fname):
@@ -42,22 +38,35 @@ def load_date(fname):
 
 if __name__ == '__main__':
     PATH = '/opt/data/' # docker中映射的目录
-    timebuf_file = PATH + op + 'time_temp_log.txt'
+    timebuf_file = PATH + 'time_temp_log.txt'
     latest_date = load_date(timebuf_file)
     max_date = latest_date
     file_date = latest_date
     # 文件列表
     files = []
     files_name=[]
-    if os.path.exists(PATH + op):
-        for file in os.listdir(PATH + op):   # 看起来缺省上正确排序，不知道未来有没有问题
+    if os.path.exists(PATH):
+        for file in os.listdir(PATH):   # 看起来缺省上正确排序，不知道未来有没有问题
             if file.endswith(".log"):
-                files.append(PATH + op + file)
+                files.append(PATH + file)
                 files_name.append(file)
     else:
         print(PATH, "doesn't exist. Check docker dir map !")
-    for file in files:
-        #fileaddress = 'E:/Industey-log-data/MSPS/Log/log_Data_1.xls'
-        # TODO 缺少文件时间处理
-        read_log(file)
-        print('end')
+    for i, file in enumerate(files):
+        filename = files_name[i]
+        try:
+            file_date = datetime.strptime(filename[0:15], '%Y%m%d_%H%M%S')
+        except ValueError as ve:
+            print('ValueError Raised: ', ve)
+            continue
+        if file_date > latest_date:  # 新时间文件可以上传
+            try:
+                read_log(file)
+            except urllib.error.URLError as ue:
+                print('URLError Raised: ', ue)
+                break
+            if file_date > max_date:
+                max_date = file_date
+    with open(timebuf_file, 'w', encoding='utf-8') as file:
+        file.write(max_date.strftime("%Y-%m-%d %H:%M:%S"))
+    print('end')
