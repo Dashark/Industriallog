@@ -8,12 +8,12 @@ from datetime import datetime
 def read_log(file):
     list1={}
     list3=[]
-    log = open(file, 'r', encoding='gbk')  # Window系统中文编码是GBK的
+    log = open(file, 'r', encoding='gbk').encode('utf-8')  # Window系统中文编码是GBK的
     count=0
     for logline in log:
         if count<5:
             logline1=logline.split(':')
-            list1[logline1[0]]=logline1[1].strip('/n')
+            list1[logline1[0]]=logline1[1].strip()
         elif count>5:
             logline = logline.split('	')
             list2 = []

@@ -10,7 +10,7 @@ def read_log(file):
     list2=[]
     list3=[]
     list4=[]
-    log = open(file, 'r', encoding='gbk')  # Window系统中文编码是GBK的
+    log = open(file, 'r', encoding='gbk').encode('utf-8')  # Window系统中文编码是GBK的
     count=0
     for logline in log:
         data1={}
@@ -102,7 +102,7 @@ def upload_subdir(op):
             continue
         if file_date > latest_date:  # 新时间文件可以上传
             current, voltage, stamp, mod =read_log(file)
-            mod.append({'测试项目':filename[0, 4]})
+            mod.append({'测试项目':filename[0:4]})
             Fin_MOD=Formulate(current,voltage,stamp,mod)
             try:
                 Update_gdf_json(Fin_MOD)
