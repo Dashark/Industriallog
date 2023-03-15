@@ -12,16 +12,17 @@ def read_log(file):
     list4=[]
     log = open(file, 'r', encoding='gbk').encode('utf-8')  # Window系统中文编码是GBK的
     count=0
-    for logline in log:
+    for line in log:
         data1={}
+        logline = line.encode('utf-8').decode('utf-8')
         if count<8:
             logline1=logline.split(':', 1)
             logline2=logline1[0].split('->', 1)
             data1[logline2[1]]=logline1[1].strip()
             list4.append(data1)
         elif count>8:
-            logline = logline.split('	')
-            list1.append(logline[2])
+            logline = logline.split('\t')
+            list1.append(logline[2].strip())
             list2.append(logline[1])
             list3.append(logline[0])
         count=count+1
@@ -88,7 +89,8 @@ def upload_subdir(op):
                 files.append(PATH + op + file)
                 files_name.append(file)
     else:
-        print(PATH, "doesn't exist. Check docker dir map !")
+        print(PATH + op, "doesn't exist. Check docker dir map !")
+        return
     # print(files_name)
     for i, file in enumerate(files):
         filename = files_name[i]
